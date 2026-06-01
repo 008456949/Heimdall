@@ -1,6 +1,6 @@
-.PHONY: install run daemon stop logs status clean test lint
+.PHONY: install run run-no-interceptor daemon-only interceptor status watch daemon stop logs clean test lint
 
-PYTHON  := .venv/bin/python3
+PYTHON  := $(shell [ -f .venv/bin/python3 ] && echo .venv/bin/python3 || echo python3)
 MITM    := mitmdump
 PLIST   := $(HOME)/Library/LaunchAgents/com.heimdall.daemon.plist
 
@@ -38,18 +38,6 @@ stop:
 
 logs:
 	@tail -f ~/.heimdall/daemon.log
-
-status:
-	@echo "=== Daemon ==="
-	@launchctl list | grep heimdall || echo "  not running"
-	@echo ""
-	@echo "=== Today's spend ==="
-	@sqlite3 ~/.heimdall/dashboard.db \
-		"SELECT provider, ROUND(SUM(cost_usd),4) as cost, \
-		 SUM(tokens_in+tokens_out) as tokens \
-		 FROM token_usage \
-		 WHERE ts > strftime('%s','now','-1 day') \
-		 GROUP BY provider;" 2>/dev/null || echo "  no data yet"
 
 clean:
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
