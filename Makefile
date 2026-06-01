@@ -8,9 +8,25 @@ install:
 	@bash scripts/setup.sh
 
 run:
-	@echo "[heimdall] Starting daemon + menubar (Ctrl-C to stop)…"
-	@$(PYTHON) -m heimdall.daemon &
-	@$(PYTHON) -m heimdall.ui.menubar
+	@echo "[heimdall] Starting Heimdall (Ctrl-C to stop)…"
+	@$(PYTHON) run.py
+
+run-no-interceptor:
+	@echo "[heimdall] Starting without interceptor (Ctrl-C to stop)…"
+	@$(PYTHON) run.py --no-interceptor
+
+daemon-only:
+	@$(PYTHON) run.py --daemon-only
+
+interceptor:
+	@echo "[heimdall] Starting mitmproxy interceptor standalone…"
+	@$(MITM) --mode local --quiet -s interceptor/proxy.py
+
+status:
+	@$(PYTHON) status.py
+
+watch:
+	@$(PYTHON) status.py --watch
 
 daemon:
 	@launchctl load $(PLIST) 2>/dev/null || launchctl start com.heimdall.daemon
@@ -19,10 +35,6 @@ daemon:
 stop:
 	@launchctl stop com.heimdall.daemon 2>/dev/null || true
 	@echo "[heimdall] Daemon stopped"
-
-interceptor:
-	@echo "[heimdall] Starting mitmproxy interceptor…"
-	@$(MITM) --mode local --quiet -s interceptor/proxy.py
 
 logs:
 	@tail -f ~/.heimdall/daemon.log
