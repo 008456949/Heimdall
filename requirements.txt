@@ -1,0 +1,3 @@
+psutil>=5.9
+rumps>=0.4
+mitmproxy>=10.1
