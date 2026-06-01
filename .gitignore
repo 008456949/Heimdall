@@ -1,13 +1,30 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
+*.pyd
+.Python
+
+# Virtual environment
 .venv/
-.env
+venv/
+env/
+
+# Heimdall runtime data
 *.db
 *.log
 *.err
+
+# macOS
 .DS_Store
+.AppleDouble
+
+# Testing
 .pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution
 dist/
 build/
 *.egg-info/
